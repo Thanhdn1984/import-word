@@ -21,7 +21,7 @@ const categoryLabels = {
   business: 'Hộ kinh doanh / Doanh nghiệp',
 };
 
-function DataForm({ fields, formData, setFormData }) {
+function DataForm({ fields, formData, setFormData, placeholderMode, setPlaceholderMode }) {
   const categories = [...new Set(fields.map(f => f.category))];
   const [activeCategory, setActiveCategory] = useState(categories[0] || 'customer');
 
@@ -34,6 +34,13 @@ function DataForm({ fields, formData, setFormData }) {
 
   const handleChange = (fieldName, value) => {
     setFormData(prev => ({ ...prev, [fieldName]: value }));
+  };
+
+  const togglePlaceholderMode = (fieldName) => {
+    setPlaceholderMode(prev => ({
+      ...prev,
+      [fieldName]: !prev[fieldName]
+    }));
   };
 
   const renderField = (field) => {
@@ -197,11 +204,28 @@ function DataForm({ fields, formData, setFormData }) {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {categoryFields.map(field => (
                     <div key={field.id} className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">
-                        {field.label}
-                        {field.required && <span className="text-red-500 ml-1">*</span>}
-                      </label>
+                      <div className="flex items-center justify-between mb-2">
+                        <label className="block text-sm font-semibold text-gray-700">
+                          {field.label}
+                          {field.required && <span className="text-red-500 ml-1">*</span>}
+                        </label>
+                        <label className="flex items-center space-x-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={placeholderMode[field.name] || false}
+                            onChange={() => togglePlaceholderMode(field.name)}
+                            className="w-4 h-4 text-banking-teal border-gray-300 rounded focus:ring-banking-teal"
+                          />
+                          <span className="text-xs text-gray-600 font-medium">Dùng làm mẫu</span>
+                        </label>
+                      </div>
                       {renderField(field)}
+                      {placeholderMode[field.name] && (
+                        <div className="mt-2 flex items-center space-x-2 text-xs text-amber-600 bg-amber-50 px-3 py-2 rounded border border-amber-200">
+                          <span className="font-mono">{'{{' + field.name + '}}'}</span>
+                          <span>← Mẫu sẽ dùng placeholder này</span>
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>

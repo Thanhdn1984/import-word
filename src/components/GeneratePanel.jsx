@@ -2,13 +2,14 @@ import React, { useState } from 'react';
 import { Download, AlertTriangle, CheckCircle, FileText, FolderOutput } from 'lucide-react';
 import { generateDocuments, validateData } from '../utils/documentGenerator';
 
-function GeneratePanel({ fields, formData, selectedTemplates }) {
+function GeneratePanel({ fields, formData, selectedTemplates, placeholderMode }) {
   const [generating, setGenerating] = useState(false);
   const [progress, setProgress] = useState(0);
   const [results, setResults] = useState([]);
   const [outputFolder, setOutputFolder] = useState('');
   const [fileNamePattern, setFileNamePattern] = useState('{ho_ten}_{so_cmnd}_{template}_{date}');
   const [conflictResolution, setConflictResolution] = useState('rename');
+  const [isTemplateMode, setIsTemplateMode] = useState(false);
 
   const handleSelectOutputFolder = async () => {
     if (!window.electronAPI) {
@@ -63,6 +64,7 @@ function GeneratePanel({ fields, formData, selectedTemplates }) {
         outputFolder,
         fileNamePattern,
         conflictResolution,
+        placeholderMode: isTemplateMode ? placeholderMode : {},
         onProgress: (current, total) => {
           setProgress((current / total) * 100);
         },
@@ -196,6 +198,23 @@ function GeneratePanel({ fields, formData, selectedTemplates }) {
               <option value="overwrite">Ghi đè</option>
               <option value="skip">Bỏ qua</option>
             </select>
+          </div>
+
+          <div className="border-t pt-4">
+            <label className="flex items-center space-x-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={isTemplateMode}
+                onChange={(e) => setIsTemplateMode(e.target.checked)}
+                className="w-5 h-5 text-banking-teal border-gray-300 rounded focus:ring-banking-teal"
+              />
+              <div>
+                <span className="text-sm font-medium text-gray-700">Chế độ tạo mẫu</span>
+                <p className="text-xs text-gray-500">
+                  Tạo file Word mẫu với placeholders thay vì giá trị thực. Các trường được đánh dấu "Dùng làm mẫu" sẽ dùng {'{{placeholder}}'} thay vì giá trị đã nhập.
+                </p>
+              </div>
+            </label>
           </div>
         </div>
       </div>

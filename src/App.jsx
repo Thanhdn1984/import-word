@@ -6,7 +6,6 @@ import TemplateSelector from './components/TemplateSelector';
 import PresetManager from './components/PresetManager';
 import GeneratePanel from './components/GeneratePanel';
 import WelcomeGuide from './components/WelcomeGuide';
-import ReverseTemplateCreator from './components/ReverseTemplateCreator';
 
 function App() {
   const [activeTab, setActiveTab] = useState('data');
@@ -16,6 +15,7 @@ function App() {
   const [currentPreset, setCurrentPreset] = useState(null);
   const [showWelcome, setShowWelcome] = useState(false);
   const [isElectron, setIsElectron] = useState(false);
+  const [placeholderMode, setPlaceholderMode] = useState({});
 
   useEffect(() => {
     // Kiểm tra an toàn xem có đang chạy trong Electron không
@@ -79,7 +79,6 @@ function App() {
     { id: 'data', label: 'Nhập dữ liệu', icon: FileText },
     { id: 'fields', label: 'Quản lý trường', icon: Settings },
     { id: 'templates', label: 'Chọn mẫu', icon: FolderOpen },
-    { id: 'reverse', label: 'Tạo mẫu ngược', icon: FileText },
     { id: 'presets', label: 'Cấu hình', icon: Save },
     { id: 'generate', label: 'Tạo file', icon: Download },
   ];
@@ -155,7 +154,9 @@ function App() {
             <DataForm 
               fields={fields} 
               formData={formData} 
-              setFormData={setFormData} 
+              setFormData={setFormData}
+              placeholderMode={placeholderMode}
+              setPlaceholderMode={setPlaceholderMode}
             />
           )}
           {activeTab === 'fields' && (
@@ -169,9 +170,6 @@ function App() {
               selectedTemplates={selectedTemplates}
               setSelectedTemplates={setSelectedTemplates}
             />
-          )}
-          {activeTab === 'reverse' && (
-            <ReverseTemplateCreator />
           )}
           {activeTab === 'presets' && (
             <PresetManager 
@@ -188,6 +186,7 @@ function App() {
               fields={fields}
               formData={formData}
               selectedTemplates={selectedTemplates}
+              placeholderMode={placeholderMode}
             />
           )}
         </div>

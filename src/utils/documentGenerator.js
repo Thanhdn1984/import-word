@@ -21,7 +21,7 @@ export function validateData(fields, formData, templates) {
 }
 
 export async function generateDocuments(options) {
-  const { fields, formData, templates, outputFolder, fileNamePattern, conflictResolution, onProgress } = options;
+  const { fields, formData, templates, outputFolder, fileNamePattern, conflictResolution, placeholderMode = {}, onProgress } = options;
 
   if (!window.electronAPI) {
     throw new Error('Electron API không khả dụng');
@@ -51,6 +51,12 @@ export async function generateDocuments(options) {
 
       const templateData = {};
       fields.forEach(field => {
+        // Nếu field được đánh dấu dùng làm mẫu, dùng placeholder thay vì giá trị thực
+        if (placeholderMode[field.name]) {
+          templateData[field.name] = `{{${field.name}}}`;
+          return;
+        }
+
         let value = formData[field.name] || '';
 
         switch (field.type) {
