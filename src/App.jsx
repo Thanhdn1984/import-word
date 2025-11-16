@@ -6,6 +6,7 @@ import TemplateSelector from './components/TemplateSelector';
 import PresetManager from './components/PresetManager';
 import GeneratePanel from './components/GeneratePanel';
 import WelcomeGuide from './components/WelcomeGuide';
+import ReverseTemplateCreator from './components/ReverseTemplateCreator';
 
 function App() {
   const [activeTab, setActiveTab] = useState('data');
@@ -18,9 +19,37 @@ function App() {
 
   useEffect(() => {
     // Kiểm tra an toàn xem có đang chạy trong Electron không
-    if (typeof window !== 'undefined' && window.electronAPI) {
-      setIsElectron(true);
+    const checkElectron = () => {
+      const hasElectronAPI = typeof window !== 'undefined' && typeof window.electronAPI !== 'undefined';
+      console.log('[App] Checking Electron API:', {
+        hasElectronAPI,
+        electronAPI: window.electronAPI,
+        windowType: typeof window
+      });
+      
+      if (hasElectronAPI) {
+        console.log('[App] ✅ Electron API detected - Setting desktop mode');
+        setIsElectron(true);
+        return true;
+      }
+      return false;
+    };
+
+    // Kiểm tra ngay lập tức
+    if (checkElectron()) {
+      return;
     }
+
+    // Nếu chưa có, thử lại sau 100ms, 500ms, 1000ms (để chắc chắn)
+    const timeouts = [100, 500, 1000].map(delay => 
+      setTimeout(() => {
+        if (checkElectron()) {
+          timeouts.forEach(clearTimeout);
+        }
+      }, delay)
+    );
+
+    return () => timeouts.forEach(clearTimeout);
   }, []);
 
   useEffect(() => {
@@ -50,6 +79,7 @@ function App() {
     { id: 'data', label: 'Nhập dữ liệu', icon: FileText },
     { id: 'fields', label: 'Quản lý trường', icon: Settings },
     { id: 'templates', label: 'Chọn mẫu', icon: FolderOpen },
+    { id: 'reverse', label: 'Tạo mẫu ngược', icon: FileText },
     { id: 'presets', label: 'Cấu hình', icon: Save },
     { id: 'generate', label: 'Tạo file', icon: Download },
   ];
@@ -139,6 +169,9 @@ function App() {
               selectedTemplates={selectedTemplates}
               setSelectedTemplates={setSelectedTemplates}
             />
+          )}
+          {activeTab === 'reverse' && (
+            <ReverseTemplateCreator />
           )}
           {activeTab === 'presets' && (
             <PresetManager 

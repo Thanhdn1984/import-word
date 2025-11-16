@@ -175,3 +175,56 @@ ipcMain.handle('load-presets', async () => {
     return { success: false, error: error.message };
   }
 });
+
+ipcMain.handle('extract-placeholders', async (event, fileContent, filePath) => {
+  try {
+    console.log('[Main] Extracting placeholders from:', filePath);
+    
+    const fileExtension = path.extname(filePath).toLowerCase();
+    let text = '';
+    
+    if (fileExtension === '.docx') {
+      // Sử dụng mammoth cho .docx
+      console.log('[Main] Processing .docx file with mammoth');
+      const buffer = await fs.readFile(filePath);
+      const mammoth = (await import('mammoth')).default;
+      const result = await mammoth.extractRawText({ buffer });
+      text = result.value;
+    } else if (fileExtension === '.doc') {
+      // Sử dụng word-extractor cho .doc (legacy format)
+      console.log('[Main] Processing .doc file with word-extractor');
+      const WordExtractor = (await import('word-extractor')).default;
+      const extractor = new WordExtractor();
+      const extracted = await extractor.extract(filePath);
+      text = extracted.getBody();
+    } else {
+      throw new Error(`Unsupported file format: ${fileExtension}. Only .doc and .docx are supported.`);
+    }
+    
+    console.log('[Main] Extracted text length:', text.length);
+    console.log('[Main] Text preview:', text.substring(0, 200));
+    
+    // Tìm tất cả các pattern {{tên_biến}}
+    const regex = /\{\{([^}]+)\}\}/g;
+    const matches = [...text.matchAll(regex)];
+    
+    const placeholderSet = new Set();
+    matches.forEach(match => {
+      const placeholder = match[1].trim();
+      if (placeholder) {
+        placeholderSet.add(placeholder);
+      }
+    });
+    
+    const placeholders = Array.from(placeholderSet).map(name => ({
+      name,
+      sampleValue: null
+    }));
+    
+    console.log('[Main] Found', placeholders.length, 'placeholders:', placeholders.map(p => p.name));
+    return placeholders;
+  } catch (error) {
+    console.error('[Main] Error extracting placeholders:', error);
+    throw error;
+  }
+});
