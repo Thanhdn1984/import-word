@@ -22,7 +22,7 @@ function createWindow() {
 
   if (process.env.NODE_ENV === 'development' || !app.isPackaged) {
     mainWindow.loadURL('http://localhost:5000');
-    mainWindow.webContents.openDevTools();
+    // DevTools tắt để tránh nhầm lẫn - Nhấn F12 trong app nếu cần debug
   } else {
     mainWindow.loadFile(path.join(__dirname, '../dist/index.html'));
   }

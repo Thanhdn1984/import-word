@@ -14,6 +14,14 @@ function App() {
   const [selectedTemplates, setSelectedTemplates] = useState([]);
   const [currentPreset, setCurrentPreset] = useState(null);
   const [showWelcome, setShowWelcome] = useState(false);
+  const [isElectron, setIsElectron] = useState(false);
+
+  useEffect(() => {
+    // Kiểm tra an toàn xem có đang chạy trong Electron không
+    if (typeof window !== 'undefined' && window.electronAPI) {
+      setIsElectron(true);
+    }
+  }, []);
 
   useEffect(() => {
     const hideGuide = localStorage.getItem('hideWelcomeGuide');
@@ -63,9 +71,13 @@ function App() {
               </div>
             </div>
             <div className="flex items-center space-x-3">
-              {!window.electronAPI && (
+              {isElectron ? (
+                <div className="bg-green-500/20 px-4 py-2 rounded-lg border border-green-400/30">
+                  <span className="text-xs font-semibold text-green-100">✓ Chế độ Desktop - Đầy đủ tính năng</span>
+                </div>
+              ) : (
                 <div className="bg-yellow-500/20 px-4 py-2 rounded-lg border border-yellow-400/30">
-                  <span className="text-xs">⚠️ Chế độ xem - Tải về máy để dùng đầy đủ</span>
+                  <span className="text-xs font-semibold text-yellow-100">⚠️ Chế độ Web - Tải về máy để dùng đầy đủ</span>
                 </div>
               )}
               {currentPreset && (
