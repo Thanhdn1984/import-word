@@ -21,6 +21,28 @@ function WelcomeGuide({ onClose, onStartTour }) {
         </div>
 
         <div className="p-6 space-y-6">
+          {!window.electronAPI && (
+            <div className="bg-yellow-50 border-2 border-yellow-400 rounded-lg p-5">
+              <div className="flex items-start space-x-3">
+                <span className="text-3xl">⚠️</span>
+                <div className="flex-1">
+                  <h3 className="font-bold text-yellow-900 mb-2 text-lg">Đang ở chế độ xem demo trên Replit</h3>
+                  <p className="text-sm text-yellow-800 mb-3">
+                    Bạn đang xem giao diện ứng dụng. Để sử dụng đầy đủ tính năng 
+                    (chọn file Word, tạo tài liệu), bạn cần <strong>tải ứng dụng về máy tính Windows</strong>.
+                  </p>
+                  <div className="bg-yellow-100 p-3 rounded border border-yellow-300">
+                    <p className="text-sm font-semibold text-yellow-900 mb-1">📖 Hướng dẫn tải về:</p>
+                    <p className="text-xs text-yellow-800">
+                      Xem file <strong>LUU_Y_QUAN_TRONG.md</strong> hoặc <strong>HUONG_DAN_TAI_CHO_WINDOWS.md</strong> 
+                      trong tab Files để biết cách tải về máy tính.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+          
           <div className="bg-gradient-to-r from-banking-light to-blue-50 p-6 rounded-lg border border-banking-teal/20">
             <h3 className="text-lg font-semibold text-banking-navy mb-2">
               Chào mừng đến với công cụ tự động hóa tài liệu!

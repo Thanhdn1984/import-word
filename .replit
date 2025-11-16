@@ -12,10 +12,10 @@ author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "workflow.run"
-args = "dev-server"
+args = "web-demo"
 
 [[workflows.workflow]]
-name = "dev-server"
+name = "web-demo"
 author = "agent"
 
 [[workflows.workflow.tasks]]
@@ -29,3 +29,7 @@ outputType = "webview"
 [[ports]]
 localPort = 5000
 externalPort = 80
+
+[[ports]]
+localPort = 40141
+externalPort = 3000

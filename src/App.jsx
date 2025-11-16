@@ -63,6 +63,11 @@ function App() {
               </div>
             </div>
             <div className="flex items-center space-x-3">
+              {!window.electronAPI && (
+                <div className="bg-yellow-500/20 px-4 py-2 rounded-lg border border-yellow-400/30">
+                  <span className="text-xs">⚠️ Chế độ xem - Tải về máy để dùng đầy đủ</span>
+                </div>
+              )}
               {currentPreset && (
                 <div className="bg-banking-teal/20 px-4 py-2 rounded-lg">
                   <span className="text-sm">Cấu hình hiện tại: <strong>{currentPreset.name}</strong></span>
