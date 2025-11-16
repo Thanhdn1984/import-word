@@ -18,12 +18,11 @@
 │   └── preload.js     # Preload script for context bridge
 ├── src/
 │   ├── components/    # React components
-│   │   ├── DataForm.jsx                # Form for data entry
+│   │   ├── DataForm.jsx                # Form for data entry (with template mode checkboxes)
 │   │   ├── FieldManager.jsx            # Field customization
 │   │   ├── TemplateSelector.jsx        # Template selection
 │   │   ├── PresetManager.jsx           # Preset management
-│   │   ├── GeneratePanel.jsx           # Document generation
-│   │   └── ReverseTemplateCreator.jsx  # Reverse template extraction
+│   │   └── GeneratePanel.jsx           # Document generation (with template mode toggle)
 │   ├── utils/
 │   │   └── documentGenerator.js  # Core document generation logic
 │   ├── App.jsx        # Main app component
@@ -47,7 +46,11 @@
 8. ✅ Professional banking UI (navy/teal theme, Vietnamese language)
 9. ✅ Offline-first architecture (no external APIs, 100% local processing)
 10. ✅ Data type formatting (currency: VNĐ format, dates: dd/MM/yyyy, lists: numbered)
-11. ✅ **Reverse template creation** - Extract placeholders from filled Word docs (.doc and .docx)
+11. ✅ **Template creation mode** - Create Word templates with placeholders from sample data
+    - Checkbox "Dùng làm mẫu" next to each input field
+    - Marked fields use {{placeholder}} instead of actual values
+    - "Chế độ tạo mẫu" toggle in generation panel
+    - Live preview of placeholder format
 
 ### Future Enhancements
 - Import/Export preset packages (.zip with embedded templates)
@@ -86,13 +89,13 @@ npm run dist
 - **business**: Hộ kinh doanh / Doanh nghiệp
 
 ## Recent Changes
-- **2024-11-16 (Evening)**: Fixed critical bugs and added reverse template feature
+- **2024-11-16 (Evening)**: Redesigned template creation feature
+  - ✅ **Template creation mode**: Simple checkbox-based workflow
+    - Each field has "Dùng làm mẫu" checkbox
+    - When checked, field shows placeholder preview: {{field_name}}
+    - "Chế độ tạo mẫu" toggle in generation panel
+    - Creates Word templates with {{placeholders}} instead of actual data
   - ✅ **Fixed Electron detection**: Added retry logic (checks at 0ms, 100ms, 500ms, 1000ms)
-  - ✅ **Reverse template creation**: Extract placeholders from filled Word documents
-    - Supports both .doc (legacy) and .docx files
-    - Uses hybrid parsing: mammoth for .docx, word-extractor for .doc
-    - New "Tạo mẫu ngược" tab in UI
-    - 3-step workflow: select file → extract → save configuration
   - ✅ Enhanced console logging for debugging Electron mode detection
   
 - **2024-11-16 (Morning)**: Hoàn thành và cải tiến UX
