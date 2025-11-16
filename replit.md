@@ -7,7 +7,7 @@
 - **Frontend**: React 18 + Vite
 - **Desktop**: Electron (for production)
 - **UI**: Tailwind CSS with banking theme (navy/teal colors)
-- **Document Processing**: docxtemplater, pizzip
+- **Document Processing**: docxtemplater, pizzip, mammoth, word-extractor
 - **Utilities**: date-fns, numeral.js
 
 ## Project Structure
@@ -18,11 +18,12 @@
 │   └── preload.js     # Preload script for context bridge
 ├── src/
 │   ├── components/    # React components
-│   │   ├── DataForm.jsx          # Form for data entry
-│   │   ├── FieldManager.jsx      # Field customization
-│   │   ├── TemplateSelector.jsx  # Template selection
-│   │   ├── PresetManager.jsx     # Preset management
-│   │   └── GeneratePanel.jsx     # Document generation
+│   │   ├── DataForm.jsx                # Form for data entry
+│   │   ├── FieldManager.jsx            # Field customization
+│   │   ├── TemplateSelector.jsx        # Template selection
+│   │   ├── PresetManager.jsx           # Preset management
+│   │   ├── GeneratePanel.jsx           # Document generation
+│   │   └── ReverseTemplateCreator.jsx  # Reverse template extraction
 │   ├── utils/
 │   │   └── documentGenerator.js  # Core document generation logic
 │   ├── App.jsx        # Main app component
@@ -46,9 +47,9 @@
 8. ✅ Professional banking UI (navy/teal theme, Vietnamese language)
 9. ✅ Offline-first architecture (no external APIs, 100% local processing)
 10. ✅ Data type formatting (currency: VNĐ format, dates: dd/MM/yyyy, lists: numbered)
+11. ✅ **Reverse template creation** - Extract placeholders from filled Word docs (.doc and .docx)
 
 ### Future Enhancements
-- Reverse template (auto-detect placeholders from filled documents)
 - Import/Export preset packages (.zip with embedded templates)
 - Document preview before generation (requires DOCX viewer)
 - Repeating table rows for dynamic lists
@@ -85,7 +86,16 @@ npm run dist
 - **business**: Hộ kinh doanh / Doanh nghiệp
 
 ## Recent Changes
-- 2024-11-16: Hoàn thành và cải tiến UX
+- **2024-11-16 (Evening)**: Fixed critical bugs and added reverse template feature
+  - ✅ **Fixed Electron detection**: Added retry logic (checks at 0ms, 100ms, 500ms, 1000ms)
+  - ✅ **Reverse template creation**: Extract placeholders from filled Word documents
+    - Supports both .doc (legacy) and .docx files
+    - Uses hybrid parsing: mammoth for .docx, word-extractor for .doc
+    - New "Tạo mẫu ngược" tab in UI
+    - 3-step workflow: select file → extract → save configuration
+  - ✅ Enhanced console logging for debugging Electron mode detection
+  
+- **2024-11-16 (Morning)**: Hoàn thành và cải tiến UX
   - ✅ Thêm hướng dẫn sử dụng ngay trong app (tự động hiện khi mở lần đầu)
   - ✅ Nút "Trợ giúp" để xem lại hướng dẫn bất cứ lúc nào
   - ✅ Gợi ý và tips hiển thị ở mỗi tab
