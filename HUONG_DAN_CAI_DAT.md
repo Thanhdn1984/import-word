@@ -2,16 +2,27 @@
 
 ## 📥 Bước 1: Tải mã nguồn về máy
 
-### Cách 1: Tải trực tiếp từ Replit
+### Cách 1: Tải file ZIP đã chuẩn bị sẵn
 
-1. Nhấn vào nút **"..."** (3 chấm) ở góc trên bên trái màn hình Replit
-2. Chọn **"Download as zip"**
-3. Giải nén file zip vừa tải về
+1. Mở tab **Files** (biểu tượng thư mục) bên trái màn hình Replit
+2. Tìm file **`docx-automation-tool.zip`** ở thư mục chính
+3. Click chuột phải vào file → Chọn **"Download"**
+4. Giải nén file zip vừa tải về
 
-### Cách 2: Sử dụng Git (nếu có)
+### Cách 2: Tải từ menu Files (nếu có quyền)
 
+1. Mở tab **Files** bên trái
+2. Click vào **3 chấm (⋮)** bên cạnh tên thư mục
+3. Chọn **"Download as zip"**
+4. Giải nén file zip
+
+### Cách 3: Sử dụng Git Clone
+
+Nếu bạn có Git trên máy:
 ```bash
-git clone <đường-dẫn-repl-của-bạn>
+git clone <URL-repl-của-bạn>.git
+cd <tên-thư-mục>
+npm install
 ```
 
 ## 💻 Bước 2: Cài đặt Node.js

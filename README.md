@@ -5,9 +5,13 @@
 ## 📥 Tải về máy tính
 
 ### Bước 1: Tải mã nguồn
-- Nhấn nút **"..."** (3 chấm) ở góc trên trái Replit
-- Chọn **"Download as zip"**
-- Giải nén file zip
+**CÁCH Dễ NHẤT:**
+1. Mở tab **Files** (📁) bên trái màn hình Replit
+2. Tìm file **`docx-automation-tool.zip`**
+3. **Click chuột phải** → Chọn **"Download"**
+4. Giải nén file zip
+
+📖 **Xem hướng dẫn chi tiết**: [CACH_TAI_VE.md](CACH_TAI_VE.md)
 
 ### Bước 2: Cài đặt Node.js
 - Truy cập: https://nodejs.org

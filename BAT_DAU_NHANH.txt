@@ -5,9 +5,11 @@
 📥 BƯỚC 1: TẢI DỰ ÁN VỀ MÁY
 
   Trên Replit:
-  → Nhấn nút "..." (3 chấm) ở góc trên trái
-  → Chọn "Download as zip"
-  → Giải nén file zip
+  → Mở tab "Files" (📁) bên trái màn hình
+  → Tìm file "docx-automation-tool.zip"
+  → Click chuột phải vào file
+  → Chọn "Download"
+  → Giải nén file zip trên máy tính
 
 ═══════════════════════════════════════════════════════════
 
