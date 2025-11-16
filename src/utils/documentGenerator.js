@@ -17,14 +17,6 @@ export function validateData(fields, formData, templates) {
     errors.push(`Thiếu ${missingFields.length} trường bắt buộc: ${missingFields.map(f => f.label).join(', ')}`);
   }
 
-  const imageFields = fields.filter(f => f.type === 'image' && formData[f.name]);
-  imageFields.forEach(field => {
-    const imagePath = formData[field.name];
-    if (imagePath && !imagePath.match(/\.(jpg|jpeg|png|gif)$/i)) {
-      warnings.push(`File ảnh ${field.label} có thể không hợp lệ`);
-    }
-  });
-
   return { errors, warnings, isValid: errors.length === 0 };
 }
 
@@ -75,7 +67,11 @@ export async function generateDocuments(options) {
               }
             }
             break;
-          case 'image':
+          case 'list':
+            if (value) {
+              const items = value.split(',').map(item => item.trim()).filter(item => item);
+              value = items.map((item, index) => `${index + 1}. ${item}`).join('\n');
+            }
             break;
         }
 

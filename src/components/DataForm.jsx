@@ -28,25 +28,6 @@ function DataForm({ fields, formData, setFormData }) {
     setFormData(prev => ({ ...prev, [fieldName]: value }));
   };
 
-  const handleImageUpload = async (fieldName) => {
-    if (!window.electronAPI) {
-      alert('Chức năng này chỉ hoạt động trong ứng dụng Electron');
-      return;
-    }
-
-    const result = await window.electronAPI.selectFiles({
-      properties: ['openFile'],
-      filters: [
-        { name: 'Images', extensions: ['jpg', 'jpeg', 'png', 'gif'] },
-        { name: 'All Files', extensions: ['*'] }
-      ]
-    });
-
-    if (!result.canceled && result.filePaths.length > 0) {
-      handleChange(fieldName, result.filePaths[0]);
-    }
-  };
-
   const renderField = (field) => {
     const value = formData[field.name] || '';
 
@@ -90,22 +71,16 @@ function DataForm({ fields, formData, setFormData }) {
           </div>
         );
 
-      case 'image':
+      case 'list':
         return (
-          <div>
-            <button
-              type="button"
-              onClick={() => handleImageUpload(field.name)}
-              className="px-4 py-2 bg-banking-teal text-white rounded-lg hover:bg-banking-dark transition-colors"
-            >
-              Chọn ảnh
-            </button>
-            {value && (
-              <div className="mt-2 text-sm text-gray-600">
-                Đã chọn: {value.split(/[\\/]/).pop()}
-              </div>
-            )}
-          </div>
+          <input
+            type="text"
+            value={value}
+            onChange={(e) => handleChange(field.name, e.target.value)}
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-banking-teal focus:border-transparent"
+            placeholder="Nhập các giá trị cách nhau bằng dấu phẩy..."
+            required={field.required}
+          />
         );
 
       case 'textarea':

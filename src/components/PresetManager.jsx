@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Save, Upload, Download, Trash2, FolderOpen } from 'lucide-react';
+import { Save, FolderOpen } from 'lucide-react';
 
 function PresetManager({ fields, setFields, selectedTemplates, setSelectedTemplates, currentPreset, setCurrentPreset }) {
   const [presets, setPresets] = useState([]);
@@ -56,14 +56,6 @@ function PresetManager({ fields, setFields, selectedTemplates, setSelectedTempla
     }
   };
 
-  const handleExportPreset = async (preset) => {
-    alert('Tính năng xuất preset đang được phát triển');
-  };
-
-  const handleImportPreset = async () => {
-    alert('Tính năng nhập preset đang được phát triển');
-  };
-
   return (
     <div>
       <h2 className="text-2xl font-bold text-banking-navy mb-6">Quản lý Preset</h2>
@@ -100,13 +92,6 @@ function PresetManager({ fields, setFields, selectedTemplates, setSelectedTempla
       <div className="bg-white rounded-lg p-6 border border-gray-200 mb-6">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold text-gray-800">Danh sách Preset</h3>
-          <button
-            onClick={handleImportPreset}
-            className="text-banking-teal hover:text-banking-dark text-sm font-medium flex items-center space-x-1"
-          >
-            <Upload size={16} />
-            <span>Nhập từ file</span>
-          </button>
         </div>
 
         {presets.length === 0 ? (
@@ -140,13 +125,6 @@ function PresetManager({ fields, setFields, selectedTemplates, setSelectedTempla
                       className="px-4 py-2 bg-banking-teal text-white rounded-lg hover:bg-banking-dark transition-colors text-sm"
                     >
                       Tải
-                    </button>
-                    <button
-                      onClick={() => handleExportPreset(preset)}
-                      className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                      title="Xuất preset"
-                    >
-                      <Download size={18} />
                     </button>
                   </div>
                 </div>

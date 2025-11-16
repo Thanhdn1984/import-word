@@ -6,8 +6,8 @@ const fieldTypes = [
   { value: 'number', label: 'Số' },
   { value: 'date', label: 'Ngày tháng' },
   { value: 'currency', label: 'Tiền tệ' },
-  { value: 'image', label: 'Hình ảnh' },
   { value: 'textarea', label: 'Văn bản dài' },
+  { value: 'list', label: 'Danh sách' },
 ];
 
 const categories = [
