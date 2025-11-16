@@ -1,0 +1,55 @@
+{
+  "name": "docx-automation-tool",
+  "version": "1.0.0",
+  "description": "Banking document automation tool for generating Word files",
+  "main": "electron/main.js",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "electron": "electron .",
+    "electron:dev": "concurrently \"npm run dev\" \"wait-on http://localhost:5000 && electron .\"",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "docxtemplater": "^3.49.3",
+    "pizzip": "^3.1.7",
+    "jszip": "^3.10.1",
+    "archiver": "^7.0.1",
+    "extract-zip": "^2.0.1",
+    "date-fns": "^3.6.0",
+    "numeral": "^2.0.6",
+    "lucide-react": "^0.344.0",
+    "clsx": "^2.1.0",
+    "tailwind-merge": "^2.2.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.1",
+    "@types/react-dom": "^18.3.0",
+    "@types/node": "^20.11.19",
+    "@vitejs/plugin-react": "^4.2.1",
+    "vite": "^5.1.4",
+    "electron": "^29.1.0",
+    "electron-builder": "^24.13.3",
+    "concurrently": "^8.2.2",
+    "wait-on": "^7.2.0",
+    "tailwindcss": "^3.4.1",
+    "autoprefixer": "^10.4.18",
+    "postcss": "^8.4.35"
+  },
+  "build": {
+    "appId": "com.banking.docx-automation",
+    "productName": "DocX Automation Tool",
+    "files": [
+      "dist/**/*",
+      "electron/**/*"
+    ],
+    "directories": {
+      "buildResources": "assets"
+    }
+  }
+}
