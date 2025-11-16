@@ -2,6 +2,17 @@
 
 Ứng dụng desktop giúp tạo hàng loạt file Word từ mẫu một cách tự động.
 
+---
+
+## ⚠️ LƯU Ý QUAN TRỌNG
+
+**Nếu bạn đang xem trên Replit:**
+- ✅ Bạn có thể xem giao diện ứng dụng
+- ❌ KHÔNG THỂ chọn file hoặc tạo tài liệu (cần chạy trên máy tính)
+- 📥 **Phải tải về máy Windows để sử dụng đầy đủ** - Xem hướng dẫn bên dưới
+
+---
+
 ## 📥 Tải về máy tính
 
 ### Bước 1: Tải mã nguồn
