@@ -35,23 +35,25 @@
 
 ## Key Features
 
-### Implemented (MVP)
+### Implemented (MVP) ✅
 1. ✅ Customizable field system (add/remove/edit fields)
-2. ✅ Multiple data types (text, number, date, currency, image, textarea)
-3. ✅ Tabbed form interface by category
-4. ✅ Template selection (single/multi-file and folder)
-5. ✅ Preset save/load system
-6. ✅ Batch document generation
-7. ✅ Validation system
-8. ✅ Professional banking UI (Vietnamese language)
+2. ✅ Multiple data types (text, number, date, currency, textarea, list)
+3. ✅ Tabbed form interface by category (7 categories)
+4. ✅ Template selection (single/multi-file and folder with subfolder support)
+5. ✅ Preset save/load system with persistent storage
+6. ✅ Batch document generation with progress tracking
+7. ✅ Smart validation (required fields, missing templates)
+8. ✅ Professional banking UI (navy/teal theme, Vietnamese language)
+9. ✅ Offline-first architecture (no external APIs, 100% local processing)
+10. ✅ Data type formatting (currency: VNĐ format, dates: dd/MM/yyyy, lists: numbered)
 
-### Planned
+### Future Enhancements
 - Reverse template (auto-detect placeholders from filled documents)
-- Import/Export preset packages (.zip)
-- Document preview before generation
-- Repeating table rows
-- Conditional blocks (if/else)
-- Image insertion in documents
+- Import/Export preset packages (.zip with embedded templates)
+- Document preview before generation (requires DOCX viewer)
+- Repeating table rows for dynamic lists
+- Conditional blocks (if/else logic in templates)
+- Image insertion (CMND/CCCD, asset photos)
 
 ## Development
 
@@ -82,10 +84,14 @@ npm run dist
 - **business**: Hộ kinh doanh / Doanh nghiệp
 
 ## Recent Changes
-- 2024-01-16: Initial project setup with Electron + React + Vite
-- 2024-01-16: Implemented core UI components and field management
-- 2024-01-16: Added template selection and preset management
-- 2024-01-16: Implemented document generation with docxtemplater
+- 2024-11-16: Completed MVP implementation
+  - Set up Electron + React + Vite architecture
+  - Implemented all core UI components (DataForm, FieldManager, TemplateSelector, PresetManager, GeneratePanel)
+  - Added 5 data types with proper formatting: text, number, date, currency, textarea, list
+  - Built document generation engine with docxtemplater
+  - Implemented batch processing with progress tracking
+  - Added preset save/load with persistent storage
+  - Created professional banking UI with Vietnamese language support
 
 ## Notes
 - Application is designed to work 100% offline for security
