@@ -57,18 +57,19 @@
 
 ## Development
 
-### Running in Development Mode (Web)
+### Chạy ứng dụng (1 click)
+```bash
+npm start
+```
+Hoặc click đúp vào file `start.bat` (Windows) hoặc `start.sh` (Mac/Linux)
+
+### Chế độ phát triển (Web)
 ```bash
 npm run dev
 ```
-Server runs on http://localhost:5000
+Server chạy trên http://localhost:5000
 
-### Running as Desktop App
-```bash
-npm run electron:dev
-```
-
-### Building for Production
+### Build sản phẩm
 ```bash
 npm run build
 npm run dist
@@ -84,14 +85,14 @@ npm run dist
 - **business**: Hộ kinh doanh / Doanh nghiệp
 
 ## Recent Changes
-- 2024-11-16: Completed MVP implementation
-  - Set up Electron + React + Vite architecture
-  - Implemented all core UI components (DataForm, FieldManager, TemplateSelector, PresetManager, GeneratePanel)
-  - Added 5 data types with proper formatting: text, number, date, currency, textarea, list
-  - Built document generation engine with docxtemplater
-  - Implemented batch processing with progress tracking
-  - Added preset save/load with persistent storage
-  - Created professional banking UI with Vietnamese language support
+- 2024-11-16: Hoàn thành và cải tiến UX
+  - ✅ Thêm hướng dẫn sử dụng ngay trong app (tự động hiện khi mở lần đầu)
+  - ✅ Nút "Trợ giúp" để xem lại hướng dẫn bất cứ lúc nào
+  - ✅ Gợi ý và tips hiển thị ở mỗi tab
+  - ✅ Script chạy đơn giản: `npm start` hoặc click đúp file start.bat/start.sh
+  - ✅ README.md chi tiết bằng tiếng Việt
+  - ✅ Việt hóa 100% toàn bộ giao diện
+  - ✅ Cải thiện thông báo và hướng dẫn người dùng
 
 ## Notes
 - Application is designed to work 100% offline for security

@@ -82,7 +82,12 @@ function GeneratePanel({ fields, formData, selectedTemplates }) {
 
   return (
     <div>
-      <h2 className="text-2xl font-bold text-banking-navy mb-6">Tạo file Word</h2>
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-2xl font-bold text-banking-navy">Tạo file Word</h2>
+        <div className="bg-purple-50 border border-purple-200 rounded-lg px-4 py-2 text-sm text-purple-800">
+          🚀 Tạo hàng loạt file chỉ trong vài giây
+        </div>
+      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
         <div className="bg-blue-50 p-6 rounded-lg border border-blue-200">

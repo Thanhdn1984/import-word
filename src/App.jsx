@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { FileText, Settings, Download, Plus, Upload, Save, FolderOpen } from 'lucide-react';
+import { FileText, Settings, Download, Save, FolderOpen, HelpCircle } from 'lucide-react';
 import FieldManager from './components/FieldManager';
 import DataForm from './components/DataForm';
 import TemplateSelector from './components/TemplateSelector';
 import PresetManager from './components/PresetManager';
 import GeneratePanel from './components/GeneratePanel';
+import WelcomeGuide from './components/WelcomeGuide';
 
 function App() {
   const [activeTab, setActiveTab] = useState('data');
@@ -12,6 +13,14 @@ function App() {
   const [formData, setFormData] = useState({});
   const [selectedTemplates, setSelectedTemplates] = useState([]);
   const [currentPreset, setCurrentPreset] = useState(null);
+  const [showWelcome, setShowWelcome] = useState(false);
+
+  useEffect(() => {
+    const hideGuide = localStorage.getItem('hideWelcomeGuide');
+    if (!hideGuide) {
+      setShowWelcome(true);
+    }
+  }, []);
 
   useEffect(() => {
     const defaultFields = [
@@ -39,6 +48,8 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+      {showWelcome && <WelcomeGuide onClose={() => setShowWelcome(false)} />}
+      
       <header className="bg-gradient-to-r from-banking-navy to-banking-dark text-white shadow-lg">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
@@ -51,11 +62,20 @@ function App() {
                 <p className="text-sm text-blue-100">Hệ thống tạo hồ sơ tín dụng tự động</p>
               </div>
             </div>
-            {currentPreset && (
-              <div className="bg-banking-teal/20 px-4 py-2 rounded-lg">
-                <span className="text-sm">Preset hiện tại: <strong>{currentPreset.name}</strong></span>
-              </div>
-            )}
+            <div className="flex items-center space-x-3">
+              {currentPreset && (
+                <div className="bg-banking-teal/20 px-4 py-2 rounded-lg">
+                  <span className="text-sm">Cấu hình hiện tại: <strong>{currentPreset.name}</strong></span>
+                </div>
+              )}
+              <button
+                onClick={() => setShowWelcome(true)}
+                className="flex items-center space-x-2 px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg transition-colors"
+              >
+                <HelpCircle size={20} />
+                <span className="text-sm">Trợ giúp</span>
+              </button>
+            </div>
           </div>
         </div>
       </header>

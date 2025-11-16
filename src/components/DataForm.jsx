@@ -111,7 +111,12 @@ function DataForm({ fields, formData, setFormData }) {
 
   return (
     <div>
-      <h2 className="text-2xl font-bold text-banking-navy mb-6">Nhập dữ liệu khách hàng</h2>
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-2xl font-bold text-banking-navy">Nhập dữ liệu khách hàng</h2>
+        <div className="bg-amber-50 border border-amber-200 rounded-lg px-4 py-2 text-sm text-amber-800">
+          ⚠ Trường có dấu <span className="text-red-500 font-bold">*</span> là bắt buộc
+        </div>
+      </div>
       
       <div className="space-y-6">
         {categories.map(category => {

@@ -72,7 +72,12 @@ function FieldManager({ fields, setFields }) {
 
   return (
     <div>
-      <h2 className="text-2xl font-bold text-banking-navy mb-6">Quản lý trường dữ liệu</h2>
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-2xl font-bold text-banking-navy">Quản lý trường dữ liệu</h2>
+        <div className="bg-blue-50 border border-blue-200 rounded-lg px-4 py-2 text-sm text-blue-800">
+          💡 Mỗi trường sẽ tạo mã giữ chỗ dạng {'{{'}<span className="font-mono font-semibold">ten_truong</span>{'}}'}
+        </div>
+      </div>
 
       <div className="bg-gradient-to-r from-banking-light to-blue-50 p-6 rounded-lg mb-6 border border-banking-teal/20">
         <h3 className="text-lg font-semibold text-banking-navy mb-4 flex items-center">

@@ -63,7 +63,12 @@ function TemplateSelector({ selectedTemplates, setSelectedTemplates }) {
 
   return (
     <div>
-      <h2 className="text-2xl font-bold text-banking-navy mb-6">Chọn mẫu Word</h2>
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-2xl font-bold text-banking-navy">Chọn mẫu Word</h2>
+        <div className="bg-green-50 border border-green-200 rounded-lg px-4 py-2 text-sm text-green-800">
+          ✓ Hỗ trợ file .docx với mã giữ chỗ {'{{'}<span className="font-mono font-semibold">ten_truong</span>{'}}'}
+        </div>
+      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
         <button

@@ -68,7 +68,7 @@ function PresetManager({ fields, setFields, selectedTemplates, setSelectedTempla
             type="text"
             value={presetName}
             onChange={(e) => setPresetName(e.target.value)}
-            placeholder="Nhập tên preset (vd: Hồ sơ vay cá nhân)"
+            placeholder="Nhập tên cấu hình (vd: Hồ sơ vay cá nhân)"
             className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-banking-teal"
           />
           <button
@@ -76,12 +76,12 @@ function PresetManager({ fields, setFields, selectedTemplates, setSelectedTempla
             className="bg-banking-teal text-white px-6 py-2 rounded-lg hover:bg-banking-dark transition-colors flex items-center space-x-2"
           >
             <Save size={20} />
-            <span>Lưu Preset</span>
+            <span>Lưu cấu hình</span>
           </button>
         </div>
 
         <div className="mt-4 text-sm text-gray-600">
-          <p>Preset sẽ lưu:</p>
+          <p>Cấu hình sẽ lưu:</p>
           <ul className="list-disc list-inside ml-4 mt-2">
             <li>{fields.length} trường dữ liệu</li>
             <li>{selectedTemplates.length} mẫu Word đã chọn</li>
@@ -91,14 +91,14 @@ function PresetManager({ fields, setFields, selectedTemplates, setSelectedTempla
 
       <div className="bg-white rounded-lg p-6 border border-gray-200 mb-6">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-gray-800">Danh sách Preset</h3>
+          <h3 className="text-lg font-semibold text-gray-800">Danh sách cấu hình đã lưu</h3>
         </div>
 
         {presets.length === 0 ? (
           <div className="text-center py-12 text-gray-400">
             <FolderOpen size={48} className="mx-auto mb-4 opacity-50" />
-            <p>Chưa có preset nào</p>
-            <p className="text-sm">Lưu cấu hình hiện tại để tạo preset mới</p>
+            <p>Chưa có cấu hình nào</p>
+            <p className="text-sm">Lưu cấu hình hiện tại để sử dụng lại sau</p>
           </div>
         ) : (
           <div className="space-y-3">
