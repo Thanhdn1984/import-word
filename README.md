@@ -2,6 +2,26 @@
 
 Ứng dụng desktop giúp tạo hàng loạt file Word từ mẫu một cách tự động.
 
+## 📥 Tải về máy tính
+
+### Bước 1: Tải mã nguồn
+- Nhấn nút **"..."** (3 chấm) ở góc trên trái Replit
+- Chọn **"Download as zip"**
+- Giải nén file zip
+
+### Bước 2: Cài đặt Node.js
+- Truy cập: https://nodejs.org
+- Tải bản **LTS** và cài đặt
+- Khởi động lại máy tính
+
+### Bước 3: Cài đặt các gói
+Mở Terminal/Command Prompt trong thư mục dự án:
+```bash
+npm install
+```
+
+📖 **Xem hướng dẫn chi tiết**: [HUONG_DAN_CAI_DAT.md](HUONG_DAN_CAI_DAT.md)
+
 ## 🚀 Cách chạy ứng dụng
 
 ### Chạy ngay (1 click)
@@ -11,18 +31,6 @@ npm start
 ```
 
 Hoặc click đúp vào file `start.bat` (Windows) hoặc `start.sh` (Mac/Linux)
-
-### Lần đầu sử dụng
-
-1. Cài đặt các gói cần thiết:
-```bash
-npm install
-```
-
-2. Chạy ứng dụng:
-```bash
-npm start
-```
 
 ## 📖 Hướng dẫn sử dụng
 
