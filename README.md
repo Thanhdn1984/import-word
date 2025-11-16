@@ -13,6 +13,16 @@
 
 ---
 
+## ⚡ KHỞI ĐỘNG NHANH (Sau khi tải về)
+
+### 🎯 Chỉ cần 1 CLICK để chạy!
+
+**Click đúp vào file: `CHAY.bat`** (hiện terminal) hoặc **`CHAY.vbs`** (chạy im lặng)
+
+➡️ Cửa sổ Electron sẽ tự động mở sau 5-10 giây!
+
+---
+
 ## 📥 Tải về máy tính
 
 ### Bước 1: Tải mã nguồn

@@ -18,14 +18,31 @@ function createWindow() {
       preload: path.join(__dirname, 'preload.js'),
     },
     title: 'Công cụ tự động hóa tài liệu ngân hàng',
+    autoHideMenuBar: true, // Ẩn menu bar để gọn gàng hơn
+    show: false, // Ẩn cho đến khi load xong
+  });
+
+  // Hiện cửa sổ khi đã load xong (tránh nhấp nháy)
+  mainWindow.once('ready-to-show', () => {
+    mainWindow.show();
   });
 
   if (process.env.NODE_ENV === 'development' || !app.isPackaged) {
     mainWindow.loadURL('http://localhost:5000');
-    // DevTools tắt để tránh nhầm lẫn - Nhấn F12 trong app nếu cần debug
   } else {
     mainWindow.loadFile(path.join(__dirname, '../dist/index.html'));
   }
+
+  // Xử lý lỗi khi load URL thất bại
+  mainWindow.webContents.on('did-fail-load', (event, errorCode, errorDescription) => {
+    console.error('Failed to load:', errorDescription);
+    // Thử load lại sau 1 giây
+    setTimeout(() => {
+      if (process.env.NODE_ENV === 'development' || !app.isPackaged) {
+        mainWindow.loadURL('http://localhost:5000');
+      }
+    }, 1000);
+  });
 }
 
 app.whenReady().then(() => {
