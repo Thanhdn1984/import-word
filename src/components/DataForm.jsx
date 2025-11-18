@@ -218,7 +218,7 @@ function DataForm({ fields, formData, setFormData, appSettings }) {
                     <div className="space-y-4 p-4 border-t border-slate-200">
                         {dataList.map((item, index) => (
                             <div key={index} className="bg-white border border-slate-300 p-4 rounded-lg relative pt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-4">
-                                <div className="absolute top-2 left-3 text-sm font-bold text-banking-dark">{vietnameseGroupName} #{index + 1}</div>
+                                <div className="absolute top-2 left-3 right-10 truncate text-sm font-bold text-banking-dark">{vietnameseGroupName} #{index + 1}</div>
                                 {fieldList.map(field => (
                                     <div key={field.id} className={field.type === 'checkbox' ? 'md:col-span-2 lg:col-span-3' : ''}>
                                         {field.type !== 'checkbox' && <label htmlFor={field.name} className="block text-sm font-medium text-gray-700 mb-1">{field.label}</label>}
