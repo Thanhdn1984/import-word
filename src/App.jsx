@@ -1,198 +1,141 @@
 import React, { useState, useEffect } from 'react';
-import { FileText, Settings, Download, Save, FolderOpen, HelpCircle } from 'lucide-react';
-import FieldManager from './components/FieldManager';
 import DataForm from './components/DataForm';
+import FieldManager from './components/FieldManager';
 import TemplateSelector from './components/TemplateSelector';
-import PresetManager from './components/PresetManager';
 import GeneratePanel from './components/GeneratePanel';
-import WelcomeGuide from './components/WelcomeGuide';
+import { Home, FileText, List, Download, Loader2, AlertTriangle } from 'lucide-react';
+
+// --- ĐÃ VIỆT HÓA VÀ TỐI GIẢN --
+
+const defaultFields = [
+    { id: 'c1', name: 'danh_xung', label: 'Danh xưng', category: 'customer', type: 'select', options: ['Ông', 'Bà'], required: true, isMultiple: true },
+    { id: 'c2', name: 'ho_ten', label: 'Họ và tên', category: 'customer', type: 'text', required: true, isMultiple: true },
+    { id: 'c4', name: 'so_cmnd', label: 'Số CMND/CCCD', category: 'customer', type: 'text', required: true, isMultiple: true },
+    { id: 'l1', name: 'so_tien_vay', label: 'Số tiền vay', category: 'loan', type: 'currency', required: true, isMultiple: true },
+];
+
+const initialFormData = {
+    customers: [{ danh_xung: 'Ông', selected: true }],
+    collaterals: [],
+    loans: [],
+    incomes: []
+};
+
+const loadAndValidate = (key, fallback, validator) => {
+    try {
+        const saved = localStorage.getItem(key);
+        if (saved == null) return fallback;
+        const parsed = JSON.parse(saved);
+        return validator(parsed) ? parsed : fallback;
+    } catch (e) {
+        console.warn(`Dữ liệu cho "${key}" trong localStorage bị hỏng. Đang quay lại giá trị mặc định.`, e);
+        return fallback;
+    }
+};
+
+// Validators
+const validateFields = (fields) => Array.isArray(fields) && fields.every(f => typeof f === 'object' && f.id && f.name);
+const validateFormData = (data) => typeof data === 'object' && data !== null && Array.isArray(data.customers);
+const validateTemplates = (templates) => Array.isArray(templates);
 
 function App() {
-  const [activeTab, setActiveTab] = useState('data');
-  const [fields, setFields] = useState([]);
-  const [formData, setFormData] = useState({});
-  const [selectedTemplates, setSelectedTemplates] = useState([]);
-  const [currentPreset, setCurrentPreset] = useState(null);
-  const [showWelcome, setShowWelcome] = useState(false);
-  const [isElectron, setIsElectron] = useState(false);
-  const [placeholderMode, setPlaceholderMode] = useState({});
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [activeTab, setActiveTab] = useState('form');
+    const [fields, setFields] = useState(null);
+    const [formData, setFormData] = useState(null);
+    const [selectedTemplates, setSelectedTemplates] = useState(null);
 
-  useEffect(() => {
-    // Kiểm tra an toàn xem có đang chạy trong Electron không
-    const checkElectron = () => {
-      const hasElectronAPI = typeof window !== 'undefined' && typeof window.electronAPI !== 'undefined';
-      console.log('[App] Checking Electron API:', {
-        hasElectronAPI,
-        electronAPI: window.electronAPI,
-        windowType: typeof window
-      });
-      
-      if (hasElectronAPI) {
-        console.log('[App] ✅ Electron API detected - Setting desktop mode');
-        setIsElectron(true);
-        return true;
-      }
-      return false;
-    };
-
-    // Kiểm tra ngay lập tức
-    if (checkElectron()) {
-      return;
-    }
-
-    // Nếu chưa có, thử lại sau 100ms, 500ms, 1000ms (để chắc chắn)
-    const timeouts = [100, 500, 1000].map(delay => 
-      setTimeout(() => {
-        if (checkElectron()) {
-          timeouts.forEach(clearTimeout);
+    useEffect(() => {
+        try {
+            setFields(loadAndValidate('app_fields', defaultFields, validateFields));
+            setFormData(loadAndValidate('app_formData', initialFormData, validateFormData));
+            setSelectedTemplates(loadAndValidate('app_selected_templates', [], validateTemplates));
+            setIsLoading(false);
+        } catch (e) {
+            console.error("Đã xảy ra lỗi nghiêm trọng trong quá trình khởi động ứng dụng:", e);
+            setError(e);
+            setIsLoading(false);
         }
-      }, delay)
-    );
+    }, []);
 
-    return () => timeouts.forEach(clearTimeout);
-  }, []);
+    useEffect(() => { if (fields) localStorage.setItem('app_fields', JSON.stringify(fields)); }, [fields]);
+    useEffect(() => { if (formData) localStorage.setItem('app_formData', JSON.stringify(formData)); }, [formData]);
+    useEffect(() => { if (selectedTemplates) localStorage.setItem('app_selected_templates', JSON.stringify(selectedTemplates)); }, [selectedTemplates]);
 
-  useEffect(() => {
-    const hideGuide = localStorage.getItem('hideWelcomeGuide');
-    if (!hideGuide) {
-      setShowWelcome(true);
+    const tabs = {
+        form: { label: 'Nhập Dữ Liệu', icon: FileText },
+        fields: { label: 'Quản Lý Trường', icon: List },
+        templates: { label: 'Chọn Mẫu Word', icon: Home },
+        generate: { label: 'Tạo File', icon: Download },
+    };
+    
+    const forceClearAndReload = () => {
+        if (window.confirm('Bạn có chắc muốn xóa toàn bộ dữ liệu đã nhập và cài đặt trường?')) {
+            localStorage.clear();
+            window.location.reload();
+        }
     }
-  }, []);
 
-  useEffect(() => {
-    const defaultFields = [
-      { id: '1', name: 'ho_ten', label: 'Họ và tên', type: 'text', category: 'customer', required: true },
-      { id: '2', name: 'ngay_sinh', label: 'Ngày sinh', type: 'date', category: 'customer', required: true },
-      { id: '3', name: 'so_cmnd', label: 'Số CMND/CCCD', type: 'text', category: 'customer', required: true },
-      { id: '4', name: 'dia_chi', label: 'Địa chỉ thường trú', type: 'text', category: 'residence', required: true },
-      { id: '5', name: 'so_dien_thoai', label: 'Số điện thoại', type: 'text', category: 'customer', required: true },
-      { id: '6', name: 'nghe_nghiep', label: 'Nghề nghiệp', type: 'text', category: 'income', required: false },
-      { id: '7', name: 'thu_nhap_thang', label: 'Thu nhập hàng tháng', type: 'currency', category: 'income', required: false },
-      { id: '8', name: 'so_tien_vay', label: 'Số tiền vay', type: 'currency', category: 'loan', required: true },
-      { id: '9', name: 'thoi_han_vay', label: 'Thời hạn vay (tháng)', type: 'number', category: 'loan', required: true },
-      { id: '10', name: 'muc_dich_vay', label: 'Mục đích vay', type: 'text', category: 'loan', required: true },
-    ];
-    setFields(defaultFields);
-  }, []);
-
-  const tabs = [
-    { id: 'data', label: 'Nhập dữ liệu', icon: FileText },
-    { id: 'fields', label: 'Quản lý trường', icon: Settings },
-    { id: 'templates', label: 'Chọn mẫu', icon: FolderOpen },
-    { id: 'presets', label: 'Cấu hình', icon: Save },
-    { id: 'generate', label: 'Tạo file', icon: Download },
-  ];
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
-      {showWelcome && <WelcomeGuide onClose={() => setShowWelcome(false)} />}
-      
-      <header className="bg-gradient-to-r from-banking-navy to-banking-dark text-white shadow-lg">
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="bg-banking-teal p-2 rounded-lg">
-                <FileText size={28} />
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold">Công cụ tự động hóa tài liệu</h1>
-                <p className="text-sm text-blue-100">Hệ thống tạo hồ sơ tín dụng tự động</p>
-              </div>
+    if (isLoading) {
+        return (
+            <div className="min-h-screen bg-slate-100 flex items-center justify-center">
+                <div className="flex flex-col items-center text-gray-600 font-sans">
+                    <Loader2 className="animate-spin mb-4 text-banking-teal" size={48} />
+                    <h1 className="text-xl font-semibold">Đang tải dữ liệu...</h1>
+                </div>
             </div>
-            <div className="flex items-center space-x-3">
-              {isElectron ? (
-                <div className="bg-green-500/20 px-4 py-2 rounded-lg border border-green-400/30">
-                  <span className="text-xs font-semibold text-green-100">✓ Chế độ Desktop - Đầy đủ tính năng</span>
+        );
+    }
+    
+    if (error) {
+         return (
+            <div className="min-h-screen bg-red-50 flex items-center justify-center p-4">
+                <div className="flex flex-col items-center text-red-800 bg-white p-8 rounded-lg shadow-xl border border-red-200">
+                    <AlertTriangle className="mb-4 text-red-600" size={48} />
+                    <h1 className="text-xl font-semibold mb-2">Đã xảy ra lỗi nghiêm trọng</h1>
+                    <p className="text-center mb-4">Ứng dụng không thể khởi động. Nhấn nút bên dưới để xóa dữ liệu hỏng và tải lại.</p>
+                    <button onClick={forceClearAndReload} className="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700">Xóa dữ liệu và Tải lại</button>
                 </div>
-              ) : (
-                <div className="bg-yellow-500/20 px-4 py-2 rounded-lg border border-yellow-400/30">
-                  <span className="text-xs font-semibold text-yellow-100">⚠️ Chế độ Web - Tải về máy để dùng đầy đủ</span>
-                </div>
-              )}
-              {currentPreset && (
-                <div className="bg-banking-teal/20 px-4 py-2 rounded-lg">
-                  <span className="text-sm">Cấu hình hiện tại: <strong>{currentPreset.name}</strong></span>
-                </div>
-              )}
-              <button
-                onClick={() => setShowWelcome(true)}
-                className="flex items-center space-x-2 px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg transition-colors"
-              >
-                <HelpCircle size={20} />
-                <span className="text-sm">Trợ giúp</span>
-              </button>
             </div>
-          </div>
-        </div>
-      </header>
+        );
+    }
 
-      <div className="container mx-auto px-6 py-6">
-        <nav className="bg-white rounded-lg shadow-md mb-6 p-2">
-          <div className="flex space-x-2">
-            {tabs.map((tab) => {
-              const Icon = tab.icon;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center space-x-2 px-4 py-3 rounded-lg transition-all ${
-                    activeTab === tab.id
-                      ? 'bg-banking-teal text-white shadow-md'
-                      : 'text-gray-600 hover:bg-gray-100'
-                  }`}
-                >
-                  <Icon size={20} />
-                  <span className="font-medium">{tab.label}</span>
-                </button>
-              );
-            })}
-          </div>
-        </nav>
+    return (
+        <div className="min-h-screen bg-slate-50 flex font-sans">
+            <aside className="w-64 bg-banking-dark text-white p-4 flex flex-col">
+                 <div className="text-center py-4 mb-6">
+                    <h1 className="text-xl font-bold">DocuGen</h1>
+                    <p className="text-xs text-slate-300">Tự động hoá tài liệu</p>
+                </div>
+                <nav className="flex-1">
+                    <ul>
+                        {Object.entries(tabs).map(([key, { label, icon: Icon }]) => (
+                            <li key={key} className="mb-2">
+                                <a href="#" onClick={() => setActiveTab(key)} 
+                                   className={`flex items-center p-3 rounded-lg transition-colors ${activeTab === key ? 'bg-banking-teal' : 'hover:bg-white/10'}`}>\
+                                    <Icon size={20} className="mr-3" />
+                                    <span>{label}</span>
+                                </a>
+                            </li>
+                        ))}
+                    </ul>
+                </nav>
+                <div className="p-2 text-center">
+                    <button onClick={forceClearAndReload} className="text-xs text-slate-400 hover:text-white hover:bg-red-600/50 p-2 rounded w-full">Xóa dữ liệu</button>
+                </div>
+            </aside>
 
-        <div className="bg-white rounded-lg shadow-md p-6 min-h-[600px]">
-          {activeTab === 'data' && (
-            <DataForm 
-              fields={fields} 
-              formData={formData} 
-              setFormData={setFormData}
-              placeholderMode={placeholderMode}
-              setPlaceholderMode={setPlaceholderMode}
-            />
-          )}
-          {activeTab === 'fields' && (
-            <FieldManager 
-              fields={fields} 
-              setFields={setFields} 
-            />
-          )}
-          {activeTab === 'templates' && (
-            <TemplateSelector 
-              selectedTemplates={selectedTemplates}
-              setSelectedTemplates={setSelectedTemplates}
-            />
-          )}
-          {activeTab === 'presets' && (
-            <PresetManager 
-              fields={fields}
-              setFields={setFields}
-              selectedTemplates={selectedTemplates}
-              setSelectedTemplates={setSelectedTemplates}
-              currentPreset={currentPreset}
-              setCurrentPreset={setCurrentPreset}
-            />
-          )}
-          {activeTab === 'generate' && (
-            <GeneratePanel 
-              fields={fields}
-              formData={formData}
-              selectedTemplates={selectedTemplates}
-              placeholderMode={placeholderMode}
-            />
-          )}
+            <main className="flex-1 p-8 overflow-y-auto">
+                <div className="bg-white rounded-xl shadow-lg p-8 max-w-6xl mx-auto">
+                    {activeTab === 'form' && <DataForm fields={fields} formData={formData} setFormData={setFormData} appSettings={{numberSeparator: ','}}/>}
+                    {activeTab === 'fields' && <FieldManager fields={fields} setFields={setFields} defaultFields={defaultFields} />}
+                    {activeTab === 'templates' && <TemplateSelector selectedTemplates={selectedTemplates} setSelectedTemplates={setSelectedTemplates} />}
+                    {activeTab === 'generate' && <GeneratePanel fields={fields} formData={formData} selectedTemplates={selectedTemplates} rawTemplateContent={null} appSettings={{numberSeparator: ','}} />} 
+                </div>
+            </main>
         </div>
-      </div>
-    </div>
-  );
+    );
 }
 
 export default App;

@@ -1,259 +1,225 @@
-import React, { useState } from 'react';
-import { Plus, Trash2, Edit2, Save, X } from 'lucide-react';
+import React, { useState, useMemo } from 'react';
+import { PlusCircle, Trash2, Edit, Save, X, AlertTriangle, ChevronDown, ChevronUp, Lock } from 'lucide-react';
 
-const fieldTypes = [
-  { value: 'text', label: 'Văn bản' },
-  { value: 'number', label: 'Số' },
-  { value: 'date', label: 'Ngày tháng' },
-  { value: 'currency', label: 'Tiền tệ' },
-  { value: 'textarea', label: 'Văn bản dài' },
-  { value: 'list', label: 'Danh sách' },
-];
+// --- ĐÃ VIỆT HÓA HOÀN TOÀN (VÀ SỬA LỖI HIỂN THỊ TÊN NHÓM) ---
 
-const categories = [
-  { value: 'customer', label: 'Thông tin khách hàng' },
-  { value: 'residence', label: 'Hộ khẩu - Cư trú' },
-  { value: 'income', label: 'Thu nhập - Công việc' },
-  { value: 'loan', label: 'Khoản vay đề nghị' },
-  { value: 'collateral', label: 'Tài sản đảm bảo' },
-  { value: 'credit', label: 'Lịch sử tín dụng' },
-  { value: 'business', label: 'Hộ kinh doanh / Doanh nghiệp' },
-];
+// Bản đồ dịch tên các nhóm dữ liệu (để nhất quán với các phần khác của ứng dụng)
+const groupNameMap = {
+    customer: 'Khách hàng',
+    loan: 'Khoản vay',
+    collateral: 'Tài sản bảo đảm',
+    income: 'Nguồn thu nhập',
+    chua_phan_loai: 'Chưa phân loại'
+};
 
-function FieldManager({ fields, setFields }) {
-  const [editingField, setEditingField] = useState(null);
-  const [newField, setNewField] = useState({
-    name: '',
-    label: '',
-    type: 'text',
-    category: 'customer',
-    required: false,
-  });
+const defaultCategories = ['customer', 'loan', 'collateral', 'income'];
 
-  const handleAddField = () => {
-    if (!newField.name || !newField.label) {
-      alert('Vui lòng nhập tên trường và nhãn');
-      return;
-    }
+// Hàm lấy tên tiếng Việt, nếu không có trong bản đồ thì trả về tên gốc
+const getVietnameseGroupName = (name) => {
+    return groupNameMap[name] || name.replace(/_/g, ' ');
+};
 
-    const field = {
-      id: Date.now().toString(),
-      ...newField,
+function FieldManager({ fields, setFields, defaultFields }) {
+    const [newCategoryName, setNewCategoryName] = useState('');
+    const [editingCategory, setEditingCategory] = useState(null);
+    const [tempCategoryName, setTempCategoryName] = useState('');
+    const [openCategories, setOpenCategories] = useState(() => {
+        const uniqueCategories = [...new Set(fields.map(f => f.category))];
+        return uniqueCategories.reduce((acc, cat) => ({ ...acc, [cat]: true }), {});
+    });
+
+    const groupedFields = useMemo(() => {
+        const sortedFields = [...fields].sort((a, b) => (a.category > b.category) ? 1 : -1);
+        return sortedFields.reduce((acc, field) => {
+            const category = field.category || 'chua_phan_loai';
+            if (!acc[category]) {
+                acc[category] = [];
+            }
+            acc[category].push(field);
+            return acc;
+        }, {});
+    }, [fields]);
+
+    const handleRestoreDefaults = () => {
+        if (window.confirm('Bạn có chắc muốn khôi phục danh sách trường về mặc định? Mọi thay đổi của bạn sẽ bị mất.')) {
+            setFields(defaultFields);
+            alert('Đã khôi phục danh sách trường mặc định thành công.');
+        }
     };
 
-    setFields([...fields, field]);
-    setNewField({
-      name: '',
-      label: '',
-      type: 'text',
-      category: 'customer',
-      required: false,
-    });
-  };
+    const handleAddCategory = (e) => {
+        e.preventDefault();
+        if (!newCategoryName || groupedFields[newCategoryName]) {
+            alert('Tên nhóm không được để trống và không được trùng với tên đã có.');
+            return;
+        }
+        const newField = { id: `custom_${Date.now()}`, name: `truong_moi_${Date.now()}`, label: 'Trường Mới', category: newCategoryName, type: 'text', options: [], required: false, isMultiple: true };
+        setFields([...fields, newField]);
+        setNewCategoryName('');
+        setOpenCategories({...openCategories, [newCategoryName]: true });
+    };
 
-  const handleDeleteField = (id) => {
-    if (confirm('Bạn có chắc muốn xóa trường này?')) {
-      setFields(fields.filter(f => f.id !== id));
-    }
-  };
+    const handleRenameCategory = (oldName) => {
+        if (!tempCategoryName || (groupedFields[tempCategoryName] && tempCategoryName !== oldName)) {
+            alert('Tên nhóm mới không hợp lệ hoặc đã tồn tại.');
+            return;
+        }
+        if (window.confirm(`Bạn có chắc muốn đổi tên nhóm "${oldName}" thành "${tempCategoryName}"?`)) {
+            const newFields = fields.map(f => f.category === oldName ? { ...f, category: tempCategoryName } : f);
+            setFields(newFields);
+        }
+        setEditingCategory(null);
+        setTempCategoryName('');
+    };
 
-  const handleEditField = (field) => {
-    setEditingField({ ...field });
-  };
+    const handleDeleteCategory = (categoryName) => {
+        if (window.confirm(`CẢNH BÁO: Bạn có chắc muốn xóa nhóm "${getVietnameseGroupName(categoryName)}" và TẤT CẢ các trường bên trong nó không? Hành động này không thể hoàn tác.`)) {
+            setFields(fields.filter(f => f.category !== categoryName));
+        }
+    };
 
-  const handleSaveEdit = () => {
-    setFields(fields.map(f => f.id === editingField.id ? editingField : f));
-    setEditingField(null);
-  };
+    const handleAddFieldToCategory = (categoryName) => {
+        const newId = `custom_${Date.now()}`;
+        const newField = { id: newId, name: '', label: 'Trường Mới', category: categoryName, type: 'text', options: [], required: false, isMultiple: true };
+        const lastIndex = fields.map(f => f.category).lastIndexOf(categoryName);
+        const newFields = [...fields];
+        if (lastIndex > -1) {
+             newFields.splice(lastIndex + 1, 0, newField);
+        } else {
+            newFields.push(newField);
+        }
+        setFields(newFields);
+    };
+    
+    const handleFieldChange = (id, property, value) => {
+        setFields(fields.map(field => {
+            if (field.id === id) {
+                const updatedField = { ...field, [property]: value };
+                if (property === 'label' && !field.name) {
+                    updatedField.name = 'var_' + value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '');
+                }
+                if (property === 'type' && value !== 'select') {
+                    updatedField.options = [];
+                }
+                return updatedField;
+            }
+            return field;
+        }));
+    };
+    
+    const handleRemoveField = (id) => {
+        setFields(fields.filter(field => field.id !== id));
+    };
 
-  const handleCancelEdit = () => {
-    setEditingField(null);
-  };
+    const toggleCategory = (categoryName) => {
+        setOpenCategories(prev => ({...prev, [categoryName]: !prev[categoryName]}));
+    };
 
-  return (
-    <div>
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold text-banking-navy">Quản lý trường dữ liệu</h2>
-        <div className="bg-blue-50 border border-blue-200 rounded-lg px-4 py-2 text-sm text-blue-800">
-          💡 Mỗi trường sẽ tạo mã giữ chỗ dạng {'{{'}<span className="font-mono font-semibold">ten_truong</span>{'}}'}
+    return (
+        <div className="space-y-8">
+             <div className="flex items-center justify-between pb-4 border-b">
+                <h2 className="text-3xl font-bold text-banking-navy">Tùy Chỉnh Trường Dữ Liệu</h2>
+                 <button onClick={handleRestoreDefaults} className="bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-600 transition-colors flex items-center space-x-2">
+                    <AlertTriangle size={20} />
+                    <span>Khôi phục Mặc định</span>
+                </button>
+            </div>
+            
+            <div className="bg-slate-50 p-4 rounded-lg border">
+                <h3 className="font-bold text-lg mb-2">Tạo nhóm dữ liệu mới</h3>
+                <form onSubmit={handleAddCategory} className="flex items-center space-x-2">
+                    <input 
+                        type="text"
+                        value={newCategoryName}
+                        onChange={(e) => setNewCategoryName(e.target.value.toLowerCase().replace(/\s+/g, '_'))}
+                        placeholder="Tên nhóm, viết liền không dấu (vd: chi_tiet_tsdb)"
+                        className="flex-grow px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-banking-teal"
+                    />
+                    <button type="submit" className="bg-banking-teal text-white px-6 py-2 rounded-lg hover:bg-banking-dark transition-colors flex items-center space-x-2 disabled:bg-gray-400" disabled={!newCategoryName}>
+                        <PlusCircle size={20} />
+                        <span>Tạo Nhóm</span>
+                    </button>
+                </form>
+            </div>
+
+            <div className="space-y-6">
+                {Object.keys(groupedFields).sort().map((categoryName) => {
+                    const isDefaultCategory = defaultCategories.includes(categoryName);
+                    return (
+                    <div key={categoryName} className="border border-slate-300 rounded-lg shadow-sm">
+                        <div className="bg-slate-100 p-3 flex items-center justify-between rounded-t-lg">
+                            {editingCategory === categoryName ? (
+                                <div className="flex-grow flex items-center space-x-2">
+                                    <input 
+                                        type="text"
+                                        value={tempCategoryName}
+                                        onChange={(e) => setTempCategoryName(e.target.value)}
+                                        className="p-1 border rounded"
+                                        autoFocus
+                                    />
+                                    <button onClick={() => handleRenameCategory(categoryName)} className="text-green-600 p-1 hover:bg-green-100 rounded-md" title="Lưu tên nhóm"><Save size={20}/></button>
+                                    <button onClick={() => setEditingCategory(null)} className="text-gray-500 p-1 hover:bg-gray-200 rounded-md" title="Hủy"><X size={20}/></button>
+                                </div>
+                            ) : (
+                                <h3 className="text-xl font-bold text-banking-dark flex items-center capitalize">
+                                    {getVietnameseGroupName(categoryName)}
+                                    {isDefaultCategory ? (
+                                        <Lock size={14} className="ml-3 text-gray-400" title="Đây là nhóm hệ thống, không thể sửa hoặc xóa."/>
+                                    ) : (
+                                        <>
+                                            <button onClick={() => { setEditingCategory(categoryName); setTempCategoryName(categoryName); }} className="ml-3 text-gray-500 hover:text-blue-600" title="Đổi tên nhóm"><Edit size={16}/></button>
+                                            <button onClick={() => handleDeleteCategory(categoryName)} className="ml-2 text-gray-500 hover:text-red-600" title="Xóa nhóm này và tất cả các trường bên trong"><Trash2 size={16}/></button>
+                                        </>
+                                    )}
+                                </h3>
+                            )}
+                            <div className="flex items-center space-x-4">
+                                <button onClick={() => handleAddFieldToCategory(categoryName)} className="text-sm bg-blue-500 text-white py-1 px-3 rounded-md hover:bg-blue-600 flex items-center space-x-1">
+                                    <PlusCircle size={16}/><span>Thêm trường</span>
+                                </button>
+                                <button onClick={() => toggleCategory(categoryName)} className="text-gray-600" title={openCategories[categoryName] ? 'Thu gọn' : 'Mở rộng'}>
+                                    {openCategories[categoryName] ? <ChevronUp size={24}/> : <ChevronDown size={24}/>}
+                                </button>
+                            </div>
+                        </div>
+
+                        {openCategories[categoryName] && (
+                            <div className="p-4 space-y-3 bg-white">
+                                {groupedFields[categoryName].map((field) => (
+                                    <div key={field.id} className="bg-white border border-slate-200 p-3 rounded-md">
+                                        <div className="grid grid-cols-1 md:grid-cols-6 gap-3 items-center">
+                                            <input type="text" placeholder="Nhãn (VD: Họ tên)" value={field.label} onChange={e => handleFieldChange(field.id, 'label', e.target.value)} className="md:col-span-2 p-2 border rounded" />
+                                            <input type="text" placeholder="Tên biến" value={field.name} onChange={e => handleFieldChange(field.id, 'name', e.target.value)} className="p-2 border rounded bg-slate-100" title="Tên biến này sẽ được dùng trong file Word, ví dụ: ${var_ho_ten}. Tự động tạo, chỉ sửa khi bạn biết mình đang làm gì."/>
+                                            <select value={field.type} onChange={e => handleFieldChange(field.id, 'type', e.target.value)} className="p-2 border rounded">
+                                                <option value="text">Chữ</option>
+                                                <option value="textarea">Đoạn văn</option>
+                                                <option value="number">Số</option>
+                                                <option value="currency">Tiền tệ</option>
+                                                <option value="date">Ngày</option>
+                                                <option value="select">Lựa chọn</option>
+                                            </select>
+                                            <div className="md:col-span-2 flex items-center justify-between">
+                                                 <div className="flex items-center space-x-3">
+                                                    <label className="flex items-center space-x-1 cursor-pointer" title="Đánh dấu nếu người dùng bắt buộc phải nhập trường này."><input type="checkbox" checked={field.required || false} onChange={e => handleFieldChange(field.id, 'required', e.target.checked)} /><span>Bắt buộc</span></label>
+                                                    <label className="flex items-center space-x-1 cursor-pointer text-gray-400" title="Tất cả các trường trong một nhóm đều là dạng 'nhiều'. Thuộc tính này được quản lý ở cấp độ nhóm."><input type="checkbox" checked={field.isMultiple || true} readOnly disabled /><span>Nhiều</span></label>
+                                                </div>
+                                                <button onClick={() => handleRemoveField(field.id)} className="p-2 rounded-md text-red-500 hover:bg-red-100" title="Xóa trường này"><Trash2 size={20} /></button>
+                                            </div>
+                                        </div>
+                                        {field.type === 'select' && (
+                                            <div className="mt-2">
+                                                <input type="text" placeholder="Các lựa chọn, cách nhau bởi dấu phẩy (VD: Tín chấp,Thế chấp)" value={Array.isArray(field.options) ? field.options.join(',') : ''} onChange={e => handleFieldChange(field.id, 'options', e.target.value.split(','))} className="w-full p-2 border rounded" />
+                                            </div>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                )})}
+            </div>
         </div>
-      </div>
-
-      <div className="bg-gradient-to-r from-banking-light to-blue-50 p-6 rounded-lg mb-6 border border-banking-teal/20">
-        <h3 className="text-lg font-semibold text-banking-navy mb-4 flex items-center">
-          <Plus className="mr-2" size={20} />
-          Thêm trường mới
-        </h3>
-        
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Tên trường (placeholder)
-            </label>
-            <input
-              type="text"
-              value={newField.name}
-              onChange={(e) => setNewField({ ...newField, name: e.target.value })}
-              placeholder="vd: ho_ten"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-banking-teal"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Nhãn hiển thị
-            </label>
-            <input
-              type="text"
-              value={newField.label}
-              onChange={(e) => setNewField({ ...newField, label: e.target.value })}
-              placeholder="vd: Họ và tên"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-banking-teal"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Kiểu dữ liệu
-            </label>
-            <select
-              value={newField.type}
-              onChange={(e) => setNewField({ ...newField, type: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-banking-teal"
-            >
-              {fieldTypes.map(type => (
-                <option key={type.value} value={type.value}>{type.label}</option>
-              ))}
-            </select>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Nhóm
-            </label>
-            <select
-              value={newField.category}
-              onChange={(e) => setNewField({ ...newField, category: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-banking-teal"
-            >
-              {categories.map(cat => (
-                <option key={cat.value} value={cat.value}>{cat.label}</option>
-              ))}
-            </select>
-          </div>
-
-          <div className="flex items-end">
-            <label className="flex items-center space-x-2 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={newField.required}
-                onChange={(e) => setNewField({ ...newField, required: e.target.checked })}
-                className="w-4 h-4 text-banking-teal focus:ring-banking-teal rounded"
-              />
-              <span className="text-sm font-medium text-gray-700">Bắt buộc</span>
-            </label>
-          </div>
-        </div>
-
-        <button
-          onClick={handleAddField}
-          className="w-full bg-banking-teal text-white py-2 rounded-lg hover:bg-banking-dark transition-colors flex items-center justify-center space-x-2"
-        >
-          <Plus size={20} />
-          <span>Thêm trường</span>
-        </button>
-      </div>
-
-      <div className="space-y-3">
-        <h3 className="text-lg font-semibold text-gray-800 mb-4">
-          Danh sách trường ({fields.length})
-        </h3>
-
-        {fields.map(field => (
-          <div key={field.id} className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
-            {editingField && editingField.id === field.id ? (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <input
-                  type="text"
-                  value={editingField.name}
-                  onChange={(e) => setEditingField({ ...editingField, name: e.target.value })}
-                  className="px-3 py-2 border border-gray-300 rounded-lg"
-                  placeholder="Tên trường"
-                />
-                <input
-                  type="text"
-                  value={editingField.label}
-                  onChange={(e) => setEditingField({ ...editingField, label: e.target.value })}
-                  className="px-3 py-2 border border-gray-300 rounded-lg"
-                  placeholder="Nhãn"
-                />
-                <div className="flex space-x-2">
-                  <button
-                    onClick={handleSaveEdit}
-                    className="flex-1 bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 flex items-center justify-center"
-                  >
-                    <Save size={16} className="mr-1" />
-                    Lưu
-                  </button>
-                  <button
-                    onClick={handleCancelEdit}
-                    className="flex-1 bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 flex items-center justify-center"
-                  >
-                    <X size={16} className="mr-1" />
-                    Hủy
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <div className="flex items-center justify-between">
-                <div className="flex-1">
-                  <div className="flex items-center space-x-3">
-                    <code className="bg-gray-100 px-2 py-1 rounded text-sm font-mono text-banking-navy">
-                      {'{{'}{field.name}{'}}'}
-                    </code>
-                    <span className="font-medium text-gray-800">{field.label}</span>
-                    <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
-                      {fieldTypes.find(t => t.value === field.type)?.label}
-                    </span>
-                    <span className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded">
-                      {categories.find(c => c.value === field.category)?.label}
-                    </span>
-                    {field.required && (
-                      <span className="text-xs bg-red-100 text-red-800 px-2 py-1 rounded">
-                        Bắt buộc
-                      </span>
-                    )}
-                  </div>
-                </div>
-                <div className="flex space-x-2">
-                  <button
-                    onClick={() => handleEditField(field)}
-                    className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                  >
-                    <Edit2 size={18} />
-                  </button>
-                  <button
-                    onClick={() => handleDeleteField(field.id)}
-                    className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                  >
-                    <Trash2 size={18} />
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
-        ))}
-
-        {fields.length === 0 && (
-          <div className="text-center py-12 text-gray-400">
-            <p>Chưa có trường nào. Thêm trường mới ở phía trên.</p>
-          </div>
-        )}
-      </div>
-    </div>
-  );
+    );
 }
 
 export default FieldManager;

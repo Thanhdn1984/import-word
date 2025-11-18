@@ -1,55 +1,59 @@
 @echo off
-chcp 65001 >nul
+title Docx Automation Tool - Starting...
+color 0B
 cls
-echo ════════════════════════════════════════════════════════
-echo   CÔNG CỤ TỰ ĐỘNG HÓA TÀI LIỆU - KHỞI ĐỘNG
-echo ════════════════════════════════════════════════════════
+
+echo ========================================
+echo      STARTING APPLICATION
+echo ========================================
 echo.
-echo [1/3] Kiểm tra Node.js...
-node --version >nul 2>&1
-if errorlevel 1 (
-    echo [LỖI] Node.js chưa được cài đặt!
-    echo Vui lòng tải và cài Node.js tại: https://nodejs.org
-    pause
-    exit /b 1
+echo    Please wait a moment...
+echo.
+
+REM Step 1: Kill old processes
+echo [1/4] Cleaning up old sessions on port 5000...
+for /f "tokens=5" %%a in ('netstat -ano ^| findstr :5000 ^| findstr LISTENING') do (
+    taskkill /F /PID %%a >nul 2>&1
 )
-echo ✓ Node.js đã cài đặt
+taskkill /F /IM electron.exe >nul 2>&1
+echo      => Done!
 echo.
 
-echo [2/3] Kiểm tra dependencies...
-if not exist "node_modules\" (
-    echo [CẢNH BÁO] Chưa cài đặt dependencies!
-    echo Đang cài đặt... Vui lòng đợi...
-    call npm install
-    if errorlevel 1 (
-        echo [LỖI] Cài đặt thất bại!
-        pause
-        exit /b 1
-    )
-)
-echo ✓ Dependencies đã sẵn sàng
-echo.
+REM Step 2: Start Vite server in the background
+echo [2/4] Starting interface server (Vite)...
+start /B "Vite Background Server" npm run dev
 
-echo [3/3] Khởi động ứng dụng Electron...
-echo.
-echo ════════════════════════════════════════════════════════
-echo   CỬA SỔ ELECTRON SẼ MỞ TRONG VÀI GIÂY
-echo   (Nếu không mở, xem file KHAC_PHUC_LOI.md)
-echo ════════════════════════════════════════════════════════
-echo.
+REM Step 3: Wait until Vite is ready
+echo [3/4] Waiting for the interface server to be ready...
 
-npm start
+:check_vite
+REM Wait 2 seconds then check
+timeout /t 2 /nobreak >nul
+REM Use curl to check if the server is responding on port 5000
+curl -s http://localhost:5000/ >nul 2>&1
 
 if errorlevel 1 (
-    echo.
-    echo [LỖI] Không thể khởi động ứng dụng!
-    echo.
-    echo Hãy thử chạy lệnh này thay thế:
-    echo   npm run dev
-    echo.
-    echo Sau đó mở trình duyệt: http://localhost:5000
-    echo (Lưu ý: Chế độ web không thể chọn file)
-    echo.
+    echo      ...Not ready, still waiting...
+    goto check_vite
 )
 
-pause
+echo      => Server is ready!
+echo.
+
+REM Step 4: Start Electron
+echo [4/4] Opening main interface (Electron)...
+echo.
+npx electron .
+
+echo.
+echo ========================================
+echo       APPLICATION CLOSED
+echo ========================================
+echo.
+
+REM Clean up Vite process after Electron is closed
+for /f "tokens=5" %%a in ('netstat -ano ^| findstr :5000 ^| findstr LISTENING') do (
+    taskkill /F /PID %%a >nul 2>&1
+)
+
+exit

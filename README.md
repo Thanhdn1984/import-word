@@ -1,114 +1,143 @@
-# Công cụ tự động hóa tài liệu ngân hàng
+# 🚀 HƯỚNG DẪN SỬ DỤNG TOÀN TẬP - CÔNG CỤ TỰ ĐỘNG HÓA TÀI LIỆU
 
-Ứng dụng desktop giúp tạo hàng loạt file Word từ mẫu một cách tự động.
+Chào mừng bạn đến với công cụ tự động hóa tài liệu! Tài liệu này là tất cả những gì bạn cần để cài đặt, sử dụng và khắc phục sự cố một cách hiệu quả nhất.
 
----
-
-## ⚠️ LƯU Ý QUAN TRỌNG
-
-**Nếu bạn đang xem trên Replit:**
-- ✅ Bạn có thể xem giao diện ứng dụng
-- ❌ KHÔNG THỂ chọn file hoặc tạo tài liệu (cần chạy trên máy tính)
-- 📥 **Phải tải về máy Windows để sử dụng đầy đủ** - Xem hướng dẫn bên dưới
+**QUAN TRỌNG:** Ứng dụng này **KHÔNG** thể hoạt động đầy đủ trên môi trường web (như Replit). Bạn **BẮT BUỘC** phải tải về máy tính Windows để sử dụng các tính năng cốt lõi như chọn và tạo file.
 
 ---
 
-## ⚡ KHỞI ĐỘNG NHANH (Sau khi tải về)
+## ⚡ BƯỚC 1: CÀI ĐẶT (Chỉ làm 1 lần duy nhất)
 
-### 🎯 Chỉ cần 1 CLICK để chạy!
+### 1.1. Tải dự án về máy tính
 
-**Click đúp vào file: `CHAY.bat`** (hiện terminal) hoặc **`CHAY.vbs`** (chạy im lặng)
+Cách đơn giản nhất là tải file ZIP đã được chuẩn bị sẵn:
 
-➡️ Cửa sổ Electron sẽ tự động mở sau 5-10 giây!
+1.  Trong giao diện Replit, nhìn sang cừa sổ **Files** (📁) bên trái.
+2.  Tìm file có tên `docx-automation-tool.zip`.
+3.  Click chuột phải vào file đó và chọn **"Download"**.
+4.  Sau khi tải về, giải nén file ZIP này vào một thư mục bất kỳ trên máy tính của bạn (ví dụ: `D:\MyApp`).
+
+### 1.2. Cài đặt Node.js
+
+Node.js là môi trường cần thiết để chạy ứng dụng.
+
+1.  Truy cập trang web: [https://nodejs.org](https://nodejs.org)
+2.  Tải về phiên bản **LTS** (Recommended For Most Users).
+3.  Chạy file cài đặt vừa tải về và làm theo các bước hướng dẫn (chỉ cần Next > Next > Install).
+4.  **QUAN TRỌNG:** Khởi động lại máy tính sau khi cài đặt xong.
+
+### 1.3. Cài đặt các gói phụ thuộc (Dependencies)
+
+Đây là bước để tải về các "thư viện" mà dự án cần để hoạt động.
+
+1.  Mở thư mục dự án bạn đã giải nén ở bước 1.1.
+2.  Trên thanh địa chỉ của thư mục (chỗ hiển thị `D:\MyApp`), gõ chữ `cmd` và nhấn **Enter**.
+3.  Một cửa sổ dòng lệnh (màu đen) sẽ hiện ra. Gõ lệnh sau vào cửa sổ đó và nhấn **Enter**:
+    ```bash
+    npm install
+    ```
+4.  Đợi khoảng 2-5 phút để quá trình cài đặt hoàn tất. Khi nó kết thúc và bạn có thể gõ chữ tiếp, nghĩa là đã xong.
+
+**Chúc mừng, bạn đã cài đặt xong!** Giờ hãy chuyển qua bước tiếp theo để chạy ứng dụng.
 
 ---
 
-## 📥 Tải về máy tính
+## 🚀 BƯỚC 2: KHỞI ĐỘNG ỨNG DỤNG (Cách sử dụng hàng ngày)
 
-### Bước 1: Tải mã nguồn
-**CÁCH Dễ NHẤT:**
-1. Mở tab **Files** (📁) bên trái màn hình Replit
-2. Tìm file **`docx-automation-tool.zip`**
-3. **Click chuột phải** → Chọn **"Download"**
-4. Giải nén file zip
+Sau khi cài đặt, mỗi lần muốn sử dụng, bạn chỉ cần làm theo cách dưới đây.
 
-📖 **Xem hướng dẫn chi tiết**: [CACH_TAI_VE.md](CACH_TAI_VE.md)
+**CÁCH TỐT NHẤT VÀ AN TOÀN NHẤT:**
 
-### Bước 2: Cài đặt Node.js
-- Truy cập: https://nodejs.org
-- Tải bản **LTS** và cài đặt
-- Khởi động lại máy tính
+▶️ **Click đúp chuột vào file `CHAY_AN_TOAN.bat`**
 
-### Bước 3: Cài đặt các gói
-Mở Terminal/Command Prompt trong thư mục dự án:
-```bash
-npm install
-```
+**Điều gì sẽ xảy ra?**
+1.  Một cửa sổ dòng lệnh sẽ hiện ra để khởi động server.
+2.  Nó sẽ yêu cầu bạn **nhấn phím bất kỳ** sau khi server đã sẵn sàng.
+3.  Sau khi bạn nhấn phím, cửa sổ ứng dụng chính (Electron) sẽ mở ra.
 
-📖 **Xem hướng dẫn chi tiết**: [HUONG_DAN_CAI_DAT.md](HUONG_DAN_CAI_DAT.md)
+Cách này đảm bảo ứng dụng luôn khởi động đúng và ổn định.
 
-## 🚀 Cách chạy ứng dụng
+---
 
-### Chạy ngay (1 click)
+## 📖 BƯỚC 3: SỬ DỤNG ỨNG DỤNG
 
-```bash
-npm start
-```
+### 3.1. Phân biệt chế độ Desktop và chế độ Web
 
-Hoặc click đúp vào file `start.bat` (Windows) hoặc `start.sh` (Mac/Linux)
+Đây là điều quan trọng nhất để tránh nhầm lẫn.
 
-## 📖 Hướng dẫn sử dụng
+*   **✓ Chế độ Desktop (ĐÚNG):**
+    *   Có banner màu **XANH LÁ** ở góc trên bên phải ghi: `✓ Chế độ Desktop - Đầy đủ tính năng`.
+    *   Đây là một cửa sổ ứng dụng riêng, **không** có thanh địa chỉ trình duyệt.
+    *   **Mọi tính năng hoạt động**: Chọn file, chọn thư mục, tạo tài liệu...
 
-### Bước 1: Quản lý trường dữ liệu
-- Vào tab **"Quản lý trường"**
-- Thêm các trường bạn cần (ví dụ: họ tên, CMND, địa chỉ...)
-- Chọn kiểu dữ liệu phù hợp: văn bản, số, ngày, tiền tệ, danh sách...
+*   **⚠️ Chế độ Web (SAI khi dùng ở máy):**
+    *   Có banner màu **VÀNG** ở góc trên bên phải ghi: `⚠️ Chế độ Web - Tải về máy...`.
+    *   Đây là một tab trong trình duyệt (Chrome, Edge...) có địa chỉ `http://localhost:5000`.
+    *   **Tính năng bị hạn chế**: Bạn sẽ gặp lỗi khi cố gắng chọn file hoặc thư mục.
 
-### Bước 2: Chọn mẫu Word
-- Vào tab **"Chọn mẫu"**
-- Chọn file .docx hoặc cả thư mục chứa mẫu
-- Mẫu Word phải có placeholder dạng: `{{ten_truong}}`
+> **LỜI KHUYÊN:** Luôn đảm bảo bạn đang làm việc trên cửa sổ có **BANNER MÀU XANH**. Nếu thấy banner vàng, hãy đóng tab trình duyệt đó đi và chỉ sử dụng cửa sổ ứng dụng đã mở.
 
-### Bước 3: Nhập dữ liệu
-- Vào tab **"Nhập dữ liệu"**
-- Điền thông tin khách hàng vào form
+### 3.2. Quy trình làm việc
 
-### Bước 4: Tạo file
-- Vào tab **"Tạo file"**
-- Chọn thư mục xuất file
-- Click **"Tạo file Word"**
+1.  **Quản lý trường dữ liệu:**
+    *   Vào tab **"Quản lý trường"**.
+    *   Tại đây, bạn định nghĩa các "biến" mà bạn sẽ sử dụng trong tài liệu (ví dụ: `ho_ten`, `so_cmnd`, `so_tien_vay`).
+    *   Thêm, sửa, xóa các trường cho phù hợp với nhu cầu của bạn.
 
-### Lưu cấu hình
-- Sau khi thiết lập xong, vào tab **"Cấu hình"**
-- Lưu bộ cài đặt để dùng lại sau
+2.  **Nhập dữ liệu:**
+    *   Vào tab **"Nhập dữ liệu"**.
+    *   Điền thông tin tương ứng vào các ô đã được tạo ra từ bước 1.
 
-## 💡 Mẹo sử dụng
+3.  **Chuẩn bị mẫu Word (.docx):**
+    *   Mở Microsoft Word, soạn một tài liệu mẫu.
+    *   Tại những vị trí cần điền thông tin tự động, hãy chèn tên trường bạn đã định nghĩa ở bước 1 vào giữa hai dấu ngoặc nhọn.
+    *   **Ví dụ:** `Kính gửi Ông/Bà: {ho_ten}, số CMND: {so_cmnd}.`
+    *   Lưu file Word với định dạng `.docx`.
 
-- **Mã giữ chỗ trong Word**: Sử dụng cú pháp `{{ten_truong}}` trong file Word
-- **Danh sách**: Nhập các giá trị cách nhau bằng dấu phẩy
-- **Tiền tệ**: Nhập số, hệ thống tự format thành "123,456 VNĐ"
-- **Ngày tháng**: Hệ thống tự format thành dd/MM/yyyy
+4.  **Chọn mẫu và Tạo file:**
+    *   Vào tab **"Chọn mẫu"**, nhấn nút **"Chọn file"** hoặc **"Chọn thư mục"** để tải các file mẫu `.docx` của bạn lên.
+    *   Chuyển qua tab **"Tạo file"**.
+    *   Nhấn **"Chọn thư mục lưu file"** để chỉ định nơi lưu các tài liệu sẽ được tạo ra.
+    *   Nhấn nút **"Tạo tài liệu"**.
 
-## 🔧 Các lệnh khác
+Hệ thống sẽ tự động lấy dữ liệu bạn đã nhập, điền vào các mẫu Word và lưu kết quả vào thư mục bạn đã chọn.
 
-- Chạy ở chế độ phát triển: `npm run dev`
-- Chạy ứng dụng desktop: `npm run electron:dev`
-- Build sản phẩm: `npm run build && npm run dist`
+---
 
-## 📝 Ví dụ mẫu Word
+## 🆘 BƯỚC 4: KHẮC PHỤC SỰ CỐ THƯỜNG GẶP
 
-```
-Kính gửi: {{ho_ten}}
-CMND: {{so_cmnd}}
-Ngày sinh: {{ngay_sinh}}
-Số tiền vay: {{so_tien_vay}}
-```
+### Vấn đề 1: Sau khi chạy `CHAY_AN_TOAN.bat`, ứng dụng không mở.
 
-## 🎯 Tính năng
+*   **Nguyên nhân 1:** Bạn chưa chạy `npm install`.
+    *   **Giải pháp:** Làm lại **Bước 1.3**.
+*   **Nguyên nhân 2:** Antivirus hoặc Windows Defender đã chặn ứng dụng.
+    *   **Giải pháp:** Tạm thời tắt antivirus và thử lại. Nếu thành công, hãy thêm thư mục dự án vào danh sách "loại trừ" (Exclusion list) của phần mềm diệt virus.
+*   **Nguyên nhân 3:** Port 5000 đang bị một ứng dụng khác chiếm dụng.
+    *   **Giải pháp:** File `CHAY_AN_TOAN.bat` đã được thiết kế để tự động xử lý vấn đề này. Nếu vẫn không được, hãy khởi động lại máy tính.
 
-✅ Tùy chỉnh trường dữ liệu hoàn toàn
-✅ Hỗ trợ nhiều kiểu dữ liệu
-✅ Tạo hàng loạt file Word
-✅ Lưu và tải cấu hình
-✅ Giao diện tiếng Việt
-✅ Hoạt động offline 100%
+### Vấn đề 2: Thấy banner màu VÀNG thay vì màu XANH.
+
+*   **Nguyên nhân:** Bạn đang nhìn nhầm vào tab trình duyệt thay vì cửa sổ ứng dụng.
+*   **Giải pháp:** Đóng tất cả các tab trình duyệt có địa chỉ `http://localhost:5000` lại. Tìm và chuyển sang cửa sổ ứng dụng (có thể nó đang bị ẩn sau các cửa sổ khác, dùng `Alt + Tab` để tìm).
+
+### Vấn đề 3: Báo lỗi "Chức năng này chỉ hoạt động trong ứng dụng Electron".
+
+*   **Nguyên nhân:** Đây chính là hệ quả của việc bạn đang ở "Chế độ Web" (banner vàng).
+*   **Giải pháp:** Xem lại "Vấn đề 2".
+
+### Vấn đề 4: Lỗi `... is not recognized as an internal or external command...`
+
+*   **Nguyên nhân:** Node.js chưa được cài đặt đúng cách hoặc bạn chưa khởi động lại máy sau khi cài.
+*   **Giải pháp:** Cài lại Node.js (Bước 1.2) và **nhớ khởi động lại máy tính**.
+
+### Nếu mọi thứ đều thất bại:
+
+1.  **Chạy file gỡ lỗi:** Click đúp vào file `CHAY_DEBUG.bat`. Nó sẽ kiểm tra và báo cáo các vấn đề tiềm ẩn trong hệ thống của bạn.
+2.  **Reset toàn bộ dự án:**
+    *   Xóa thư mục `node_modules`.
+    *   Xóa file `package-lock.json`.
+    *   Chạy lại `npm install` từ đầu (Bước 1.3).
+
+---
+
+Chúc bạn sử dụng công cụ hiệu quả!
